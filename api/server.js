@@ -17,7 +17,7 @@ const server = http.createServer((req,res)=>{
 
     console.log(`${req.url}`);
     //muzix/user/user69
-    if(req.url.match(/\/muzix\/user\/([a-zA-Z0-9]+$)/) && req.method == 'GET'){
+    if(req.url.match(/\/muzix\/user\/([a-zA-Z0-9])/g) && req.method == 'GET'){
         const id = req.url.split('/')[3];
         //apakah id tersedia di database??
         //jika iya, maka ambil datanya
@@ -26,7 +26,7 @@ const server = http.createServer((req,res)=>{
         console.log(`success: ${id}`);
     }
     //muzix/user/user69/findNearby/10
-    else if(req.url.match(/\/muzix\/user\/([a-zA-Z0-9])\/findNearby\/([0-9])/) && req.method == 'GET'){
+    else if(req.url.match(/\/muzix\/user\/([a-zA-Z0-9])\/findNearby\/([0-9])/g) && req.method == 'GET'){
         const id = req.url.split('/')[3];
         const total_req = parseInt(req.url.split('/')[5]);
         //apakah id tersedia di database dan apakah total_req kurang dari total user??
@@ -35,7 +35,7 @@ const server = http.createServer((req,res)=>{
         console.log(`success: ${id} && ${total_req}`);
     }
     //muzix/user/minLevel/69/maxLevel/169
-    else if(req.url.match(/\/muzix\/user\/minLevel\/([0-9])\/maxLevel\/([0-9])/) && req.method == 'GET'){
+    else if(req.url.match(/\/muzix\/user\/minLevel\/([0-9])\/maxLevel\/([0-9])/g) && req.method == 'GET'){
         const min_level = parseInt(req.url.split('/')[4]);
         const max_level = parseInt(req.url.split('/')[6]);
         //apakah min_level < max_level && min_level < 255 && max_level > 0??
@@ -44,7 +44,7 @@ const server = http.createServer((req,res)=>{
         console.log(`success: ${min_level} && ${max_level}`);
     }
     //muzix/user/findByInstruments/100010010
-    else if(req.url.match(/\/muzix\/user\/findByInstruments\/([0-1])/) && req.method == 'GET'){
+    else if(req.url.match(/\/muzix\/user\/findByInstruments\/([0-1])/g) && req.method == 'GET'){
         const instruments = parseInt(req.url.split('/')[4]);
         //apakah array instruments sesuai dengan max_instruments di DB??
         //jika iya, maka ambil data-datanya
@@ -52,7 +52,7 @@ const server = http.createServer((req,res)=>{
         console.log(`success: ${instruments}`);
     }
     //muzix/user/user69/findNearby/10/findByInstruments/111010010minLevel/12/maxLevel/123
-    else if(req.url.match(/\/muzix\/user\/([a-zA-Z0-9])\/findNearby\/([0-9])\/findByInstruments\/([0-1])\/minLevel\/([0-9])\/maxLevel\/([0-9])/) && req.method == 'GET'){
+    else if(req.url.match(/\/muzix\/user\/([a-zA-Z0-9])\/findNearby\/([0-9])\/findByInstruments\/([0-1])\/minLevel\/([0-9])\/maxLevel\/([0-9])/g) && req.method == 'GET'){
         const id = req.url.split('/')[3];
         const total_req = parseInt(req.url.split('/')[5]);
         const instruments = parseInt(req.url.split('/')[7]);
@@ -77,13 +77,13 @@ const server = http.createServer((req,res)=>{
         console.log(`success register`);
     }
     //muzix/user/user72/delete
-    else if(req.url.match(/\/muzix\/user\/([a-zA-Z0-9])\/delete/) && req.method == 'DELETE'){
+    else if(req.url.match(/\/muzix\/user\/([a-zA-Z0-9])\/delete/g) && req.method == 'DELETE'){
         //Delete by username
         console.log(`success delete: ${id}`);
 
     }
     //muzix/user/user123/update
-    else if(req.url.match(/\/muzix\/user\/([a-zA-Z0-9])\/update/) && req.method == 'PUT'){
+    else if(req.url.match(/\/muzix\/user\/([a-zA-Z0-9])\/update/g) && req.method == 'PUT'){
         //Update all entity by username
         console.log(`success update: ${id}`);
 
