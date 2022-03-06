@@ -5,6 +5,11 @@ const findByUname = async (uname) => {
     return res;
 }
 
+const getAllUserCoordinate = async () => {
+    const res_buffer = await User.find({});
+    return res_buffer.map(res => res.x_coord);
+}
+
 module.exports = {
     findByUname
 };

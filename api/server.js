@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const http = require('http');
 const { url } = require('inspector');
 
+const { 
+    getUserInfo
+} = require('./controllers/userControllers');
+
 // Connect to DB
 mongoose.connect('mongodb://localhost:6969/test_db',(err) => {
     if (!err) { console.log('MongoDB Connection Succeeded.') }
@@ -25,13 +29,15 @@ const server = http.createServer((req,res)=>{
     console.log(`${req.url}`);
     //user/user69
     if(req.url.match(/\/user\/([a-zA-Z0-9])+$/) && req.method == 'GET'){
-        const id = req.url.split('/')[2];
+        const uname = req.url.split('/')[2];
 
-        //apakah id tersedia di database??
+        //apakah uname tersedia di database??
         //jika iya, maka ambil datanya
         //jika tidak, maka kirim pesan error
 
-        console.log(`success: ${id}`);
+        getUserInfo(req,res,uname);
+
+        console.log(`success: ${uname}`);
     }
     //user/user69/findNearby/10
     else if(req.url.match(/\/user\/([a-zA-Z0-9])+\/findNearby\/([0-9])+$/) && req.method == 'GET'){
@@ -123,7 +129,7 @@ server.listen(PORT,(e)=>{
         console.log(e);
     }
     else {
-        console.log(`server running on port ${4321}`);
+        console.log(`Server running on port ${4321}`);
     }
 })
 
