@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const User = require('../models/userModel');
 const UserData = require('../models/userDataModel');
 const header = require('../utils/header');
+const {binerToInstruments} = require('../utils/binerToInstruments');
 
 //Next, just play with JWT, CRUD, and data control
 
@@ -17,7 +18,12 @@ const getUserInfo = async (req,res,uname) => {
              res.end();
          }
          else {
-            const user_data = await UserData.findByUname(uname)
+            const user_data = await UserData.findByUname(uname);
+
+            user_data.instruments = await binerToInstruments(user_data.instruments);
+
+            // console.log(user_data.instruments);
+
             res.writeHead(200,header);
             res.write(JSON.stringify(user_data));
             res.end();
@@ -30,6 +36,8 @@ const getUserInfo = async (req,res,uname) => {
         res.end();
     }
 };
+
+// users user_datas
 
 module.exports = {
     getUserInfo

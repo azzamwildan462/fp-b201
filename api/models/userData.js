@@ -15,6 +15,8 @@ const user_data_schema = mongoose.Schema({
     },
     skill_level:{
         type: Number,
+        min: 0,
+        max: 255,
         default: 0
     },
     x_coord: {

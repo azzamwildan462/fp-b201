@@ -29,7 +29,6 @@ const server = http.createServer((req,res)=>{
 
     //URL HANDLERR!! 
 
-    // console.log(`${req.url}`);
     //user/user69
     if(req.url.match(/\/user\/([a-zA-Z0-9])+$/) && req.method == 'GET'){
         const uname = req.url.split('/')[2];
@@ -78,6 +77,7 @@ const server = http.createServer((req,res)=>{
         const min_level = parseInt(req.url.split('/')[8]);
         const max_level = parseInt(req.url.split('/')[10]);
 
+        //Query string
         /*
         apakah id tersedia di database dan 
         apakah total_req kurang dari total user dan 
@@ -114,10 +114,14 @@ const server = http.createServer((req,res)=>{
         // console.log(`success update: ${id}`);
 
     }
+    else if(req.url == "/favicon.ico" && req.method == 'GET'){
+        res.writeHead(462,header);
+        res.end(JSON.stringify({message: 'There is no favicon.ico, you should follow the damn train!'}));
+    }
     //Invalid URLLLLLLL
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: 'URL Invalid' }));
+        res.end(JSON.stringify({ message: 'Invalid URL' }));
     }
 })
 
