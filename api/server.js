@@ -1,12 +1,19 @@
+const mongoose = require('mongoose');
 const http = require('http');
 const { url } = require('inspector');
+
+// Connect to DB
+mongoose.connect('mongodb://localhost:6969/test_db',(err) => {
+    if (!err) { console.log('MongoDB Connection Succeeded.') }
+    else { console.log('Error in DB connection : ' + err) }
+});
 
 const server = http.createServer((req,res)=>{
     req.url = encodeURI(req.url);
 
     console.log(`${req.method}: ${req.url}`); //Debug
 
-    //Ketika koneksi user sangat lambat, melebihi 12345 ms
+    //Ketika koneksi (req,res) user sangat lambat, melebihi 12345 ms
     res.setTimeout(12345,()=>{
         res.writeHead(408,{'Content-type': 'Application/json'});
         res.end(JSON.stringify({message: 'HTTP Error 408 - Request Timeout'}));
@@ -98,7 +105,7 @@ const server = http.createServer((req,res)=>{
         const id = req.url.split('/')[2];
 
         //Update all entity by username
-        
+
         console.log(`success update: ${id}`);
 
     }
