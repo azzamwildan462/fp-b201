@@ -9,6 +9,7 @@
   "author": "Wellcode72",
   "license": "ISC",
   "dependencies": {
+    "js-yaml": "^4.1.0",
     "mongoose": "^6.2.4"
   }
 }

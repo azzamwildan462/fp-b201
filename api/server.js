@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const http = require('http');
 const { url } = require('inspector');
 const { header } = require('./utils/header');
+const {
+    api_env,
+    mongo_env
+} = require('./utils/yaml-parser');
 
 const { 
     getUserInfo
@@ -125,12 +129,12 @@ const server = http.createServer((req,res)=>{
     }
 })
 
-server.listen(SERVER_PORT,(e)=>{
+server.listen(api_env.port,(e)=>{
     if(e){
         // console.log(e);
     }
     else {
-        // console.log(`Server running on port ${SERVER_PORT}`);
+        console.log(`Server running on port ${SERVER_PORT}`);
     }
 })
 
