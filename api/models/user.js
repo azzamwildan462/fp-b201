@@ -1,43 +1,25 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var user_schema = mongoose.Schema({
+const user_schema = mongoose.Schema({
     username: {
-        "bsonType": "string",
-        require: true,
-        unique: true
+        type: String,
+        required: true,
+        unique: true,
+        min: 1,
+        max: 255
     },
-    instruments: {
-        "bsonType": "array",
-        "maxItems": 20,
-        require: true
-    },
-    skill_level:{
-        "bsonType": "int",
-        default: 0
-    },
-    x_coord: {
-        "bsonType": "double"
-    },
-    y_coord: {
-        "bsonType": "double"
-    },
-    contacts: {
-        whatsapp: {
-            "bsonType": "string",
-        },
-        id_line: {
-            "bsonType": "string",
-        },
-        instagram: {
-            "bsonType": "string",
-        },
+    password: {
+        type: String,
+        required: true,
+        min: 1,
+        max: 1024
     },
     created: {
-        "bsonType": "date",
+        type: Date,
         default: Date.now
     }
 });
 
-var User = mongoose.model('User',user_schema);
+var User = mongoose.model('Users',user_schema);
 
 module.exports = User;
