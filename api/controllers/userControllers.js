@@ -16,8 +16,8 @@ const getUserInfo = async (req,res,uname) => {
              res.end();
          }
          else {
-            console.log(user_data);
-            res.writeHead(404,header);
+            // console.log(user_data);
+            res.writeHead(200,header);
             res.write(JSON.stringify(user_data));
             res.end();
          }

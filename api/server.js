@@ -1,10 +1,13 @@
 const mongoose = require('mongoose');
 const http = require('http');
 const { url } = require('inspector');
+const { header } = require('./utils/header');
 
 const { 
     getUserInfo
 } = require('./controllers/userControllers');
+
+const SERVER_PORT = 4321;
 
 // Connect to DB
 mongoose.connect('mongodb://localhost:6969/test_db',(err) => {
@@ -15,29 +18,25 @@ mongoose.connect('mongodb://localhost:6969/test_db',(err) => {
 const server = http.createServer((req,res)=>{
     req.url = encodeURI(req.url);
 
-    console.log(`${req.method}: ${req.url}`); //Debug
+    // console.log(`${req.method}: ${req.url}`); //Debug
 
     //Ketika koneksi (req,res) user sangat lambat, melebihi 12345 ms
     res.setTimeout(12345,()=>{
-        res.writeHead(408,{'Content-type': 'Application/json'});
+        res.writeHead(408,header);
         res.end(JSON.stringify({message: 'HTTP Error 408 - Request Timeout'}));
     })
 
 
     //URL HANDLERR!! 
 
-    console.log(`${req.url}`);
+    // console.log(`${req.url}`);
     //user/user69
     if(req.url.match(/\/user\/([a-zA-Z0-9])+$/) && req.method == 'GET'){
         const uname = req.url.split('/')[2];
 
-        //apakah uname tersedia di database??
-        //jika iya, maka ambil datanya
-        //jika tidak, maka kirim pesan error
-
         getUserInfo(req,res,uname);
 
-        console.log(`success: ${uname}`);
+        // console.log(`success: ${uname}`);
     }
     //user/user69/findNearby/10
     else if(req.url.match(/\/user\/([a-zA-Z0-9])+\/findNearby\/([0-9])+$/) && req.method == 'GET'){
@@ -48,7 +47,7 @@ const server = http.createServer((req,res)=>{
         //jika iya, maka ambil data-datanya
         //jika tidak, maka kirim pesan error
 
-        console.log(`success: ${id} && ${total_req}`);
+        // console.log(`success: ${id} && ${total_req}`);
     }
     //user/minLevel/69/maxLevel/169
     else if(req.url.match(/\/user\/minLevel\/([0-9])+\/maxLevel\/([0-9])+$/) && req.method == 'GET'){
@@ -59,7 +58,7 @@ const server = http.createServer((req,res)=>{
         //jika iya, maka ambil data-datanya
         //jika tidak, maka kirim pesan error1
 
-        console.log(`success: ${min_level} && ${max_level}`);
+        // console.log(`success: ${min_level} && ${max_level}`);
     }
     //user/findByInstruments/100010010
     else if(req.url.match(/\/user\/findByInstruments\/([0-1])+$/) && req.method == 'GET'){
@@ -69,7 +68,7 @@ const server = http.createServer((req,res)=>{
         //jika iya, maka ambil data-datanya
         //jika tidak, maka kirim pesan error
 
-        console.log(`success: ${instruments}`);
+        // console.log(`success: ${instruments}`);
     }
     //user/user69/findNearby/10/findByInstruments/111010010/minLevel/12/maxLevel/123
     else if(req.url.match(/\/user\/([a-zA-Z0-9])+\/findNearby\/([0-9])+\/findByInstruments\/([0-1])+\/minLevel\/([0-9])+\/maxLevel\/([0-9])+$/) && req.method == 'GET'){
@@ -88,14 +87,14 @@ const server = http.createServer((req,res)=>{
         jika tidak, maka kirim pesan error
         */
 
-       console.log(`success: ${id} && ${total_req} && ${instruments} && ${min_level} && ${max_level}`);
+    //    console.log(`success: ${id} && ${total_req} && ${instruments} && ${min_level} && ${max_level}`);
     }
     //user/register
     else if(req.url == '/user/register' && req.method == 'POST'){
 
         //Tambah user, tanpa validasi, validasnya nanti di controller
 
-        console.log(`success register`);
+        // console.log(`success register`);
     }
     //user/user72/delete
     else if(req.url.match(/\/user\/([a-zA-Z0-9])+\/delete/) && req.method == 'DELETE'){
@@ -103,7 +102,7 @@ const server = http.createServer((req,res)=>{
 
         //Delete by username
 
-        console.log(`success delete: ${id}`);
+        // console.log(`success delete: ${id}`);
 
     }
     //user/user123/update
@@ -112,7 +111,7 @@ const server = http.createServer((req,res)=>{
 
         //Update all entity by username
 
-        console.log(`success update: ${id}`);
+        // console.log(`success update: ${id}`);
 
     }
     //Invalid URLLLLLLL
@@ -122,14 +121,12 @@ const server = http.createServer((req,res)=>{
     }
 })
 
-const PORT = 4321;
-
-server.listen(PORT,(e)=>{
+server.listen(SERVER_PORT,(e)=>{
     if(e){
-        console.log(e);
+        // console.log(e);
     }
     else {
-        console.log(`Server running on port ${4321}`);
+        // console.log(`Server running on port ${SERVER_PORT}`);
     }
 })
 
