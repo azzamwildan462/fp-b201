@@ -8,13 +8,13 @@ const {
 } = require('./utils/yaml-parser');
 
 const { 
-    getUserInfo
+    getUserInfo,
+    createNewUser
 } = require('./controllers/userControllers');
 
-const SERVER_PORT = 4321;
-
 // Connect to DB
-mongoose.connect('mongodb://localhost:6969/test_db',(err) => {
+// console.log(mongo_env.url);
+mongoose.connect(mongo_env.url,(err) => {
     if (!err) { console.log('MongoDB Connection Succeeded.') }
     else { console.log('Error in DB connection : ' + err) }
 });
@@ -98,7 +98,9 @@ const server = http.createServer((req,res)=>{
 
         //Tambah user, tanpa validasi, validasnya nanti di controller
 
-        // console.log(`success register`);
+        createNewUser(req,res);
+        console.log(`success register`);
+
     }
     //user/user72/delete
     else if(req.url.match(/\/user\/([a-zA-Z0-9])+\/delete/) && req.method == 'DELETE'){
@@ -134,7 +136,7 @@ server.listen(api_env.port,(e)=>{
         // console.log(e);
     }
     else {
-        console.log(`Server running on port ${SERVER_PORT}`);
+        console.log(`Server running on port ${api_env.port}`);
     }
 })
 

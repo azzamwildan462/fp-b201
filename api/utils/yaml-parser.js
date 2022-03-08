@@ -10,6 +10,10 @@ try {
     console.log(e);
   }
 
+  var url_buffer = "mongodb://";
+  mongo_env.url = url_buffer.concat(mongo_env.ip,":",mongo_env.port,"/",mongo_env.db);
+
+
 module.exports = {
 api_env,
 mongo_env

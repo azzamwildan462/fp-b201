@@ -3,6 +3,9 @@ const User = require('../models/userModel');
 const UserData = require('../models/userDataModel');
 const header = require('../utils/header');
 const {binerToInstruments} = require('../utils/binerToInstruments');
+const {getBodyData} = require('../utils/requestParser');
+const { parse } = require('querystring');
+
 
 //Next, just play with JWT, CRUD, and data control
 
@@ -37,8 +40,35 @@ const getUserInfo = async (req,res,uname) => {
     }
 };
 
+const createNewUser = async (req,res) => {
+    try {
+        getBodyData(req, async result => {
+            const success = await User.createUser(JSON.parse(result));
+            if(!success){
+                res.writeHead(404,header);
+                res.write(JSON.stringify({
+                    message: 'There is an error, maybe??'
+                }));
+                res.end();
+            }
+            else {
+                res.writeHead(200,header);
+                // res.write(JSON.stringify(user_data));
+                res.end();
+            }
+        })
+    } catch (e){
+        res.writeHead(404,header);
+        res.write(JSON.stringify({
+            message: 'There is an error, maybe??'
+        }));
+        res.end();
+    }
+};
+
 // users user_datas
 
 module.exports = {
-    getUserInfo
+    getUserInfo,
+    createNewUser
 };
