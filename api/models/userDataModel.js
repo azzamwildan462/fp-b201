@@ -5,9 +5,28 @@ const findByUname = async (uname) => {
     return res;
 };
 
-const getAllUserCoordinate = async () => {
+const getAllUserCoordinateX = async () => {
     const res_buffer = await UserData.find({});
     return res_buffer.map(res => res.x_coord);
+};
+
+const getAllUserCoordinateY = async () => {
+    const res_buffer = await UserData.find({});
+    return res_buffer.map(res => res.y_coord);
+};
+
+const getUsername = async () => {
+    const res_buffer = await UserData.find({});
+    return res_buffer.map(res => res.username);
+};
+
+const filterCoordinate = async () => {
+    const res_buffer = await UserData.find({});
+    var buffer = [];
+    buffer.username = res_buffer.map(res => res.username);
+    buffer.x = res_buffer.map(res => res.x_coord);
+    buffer.y = res_buffer.map(res => res.y_coord);
+    return buffer;
 };
 
 const createUserData = async (uname) => {
@@ -29,8 +48,17 @@ const updateData = async (uname,data) => {
     return ret;
 };
 
+const findByLevel = async (min_treshold,max_treshold) => {
+
+}
+
 module.exports = {
     findByUname,
     createUserData,
-    updateData
+    updateData,
+    findByLevel,
+    getAllUserCoordinateX,
+    getAllUserCoordinateY,
+    getUsername,
+    filterCoordinate
 };

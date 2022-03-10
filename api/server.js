@@ -15,7 +15,8 @@ const {
 
 const { 
     getUserInfo,
-    updateData
+    updateData,
+    findNearby
 } = require('./controllers/userDataController');
 
 // Connect to DB
@@ -42,10 +43,12 @@ const server = http.createServer((req,res)=>{
         const uname = req.url.split('/')[2];
         getUserInfo(req,res,uname);
     }
-    //user/findNearby/10
-    else if(req.url.match(/\/user\/findNearby\/([0-9])+$/) && req.method == 'GET'){
+    //user/user123/findNearby/10
+    else if(req.url.match(/\/user\/([a-zA-Z0-9])+\/findNearby\/([0-9])+$/) && req.method == 'GET'){
+        const uname = req.url.split('/')[2];
         const treshold = parseInt(req.url.split('/')[4]);
 
+        findNearby(req,res,uname,treshold);
         // console.log(`success: ${id} && ${treshold}`);
     }
     //user/minLevel/69/maxLevel/169

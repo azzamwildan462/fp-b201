@@ -13,7 +13,7 @@ const bcrypt = require('bcrypt');
 
 
 
-//Next, just play with JWT, CRUD, and data control
+//Next, just play with data control
 
 const createNewUser = async (req,res) => {
     try {

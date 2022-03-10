@@ -1,6 +1,23 @@
 const User = require('../models/userModel');
 const {header} = require('./header');
 const safetyCreateUser = async (user,res) => {
+    if(!user.username){
+        res.writeHead(404,header);
+        res.write(JSON.stringify({
+            message: 'Insert Username!'
+        }));
+        res.end();
+        return 0;
+    }
+    if(!user.password){
+        res.writeHead(404,header);
+        res.write(JSON.stringify({
+            message: 'Insert Password!'
+        }));
+        res.end();
+        return 0;
+    }
+    
     const buffer = await User.findByUname(user.username);
     if(!buffer){
         return 1;
