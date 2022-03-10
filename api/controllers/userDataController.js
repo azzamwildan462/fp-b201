@@ -77,7 +77,7 @@ const findNearby = async (req,res,treshold) => {
     }
 };
 
-const updateDate = async (req,res,uname) => {
+const updateData = async (req,res,uname) => {
     try {
         const user = await User.findByUname(uname);
         if(!user){
@@ -88,15 +88,54 @@ const updateDate = async (req,res,uname) => {
             res.end();
         }
         else {
-            getBodyData(req, async result => {
-                const user = await User.findByUname(JSON.parse(result).username);
+            const authHeader = await getHeader(req, 'authorization');
+            if(!authHeader){
+                res.writeHead(404,header);
+                res.write(JSON.stringify({
+                    message: 'Please login'
+                }));
+                res.end();
+                return;
+            }
+            const authToken = authHeader.split(' ')[5];
+            if(!authToken){
+                res.writeHead(404,header);
+                res.write(JSON.stringify({
+                    message: 'Do you login correctly?'
+                }));
+                res.end();
+                return;
+            }
+            const user_verified = jwt.verify(authToken,jwt_env.secret_token);
 
+            if(!user_verified){
+                res.writeHead(404,header);
+                res.write(JSON.stringify({
+                    message: 'You just doesnt register properly!'
+                }));
+                res.end();
+                return;
+            }
+
+            getBodyData(req, async result => {
+                const ret = await UserData.updateData(user_verified.username,JSON.parse(result));
+                // console.log(ret);
+                if(!ret){
+                    res.writeHead(404,header);
+                    res.write(JSON.stringify({
+                        message: 'Update data failed'
+                    }));
+                    res.end();
+                }
+                res.writeHead(200,header);
+                res.write(JSON.stringify(ret));
+                res.end();
             })
         }
     } catch (e){
         res.writeHead(404,header);
         res.write(JSON.stringify({
-            message: 'There is an error, maybe??'
+            message: 'There is an error, maybe invalid token??'
         }));
         res.end();
     }
@@ -104,5 +143,6 @@ const updateDate = async (req,res,uname) => {
 
 module.exports = {
     getUserInfo,
-    findNearby
+    findNearby,
+    updateData
 };

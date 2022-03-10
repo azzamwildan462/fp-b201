@@ -34,7 +34,7 @@ const createNewUser = async (req,res) => {
             else {
                 const token = await jwt.sign({username: JSON.parse(result).username},jwt_env.secret_token,{ expiresIn: '1800s' });
                 res.writeHead(200,{...header,
-                    Authorization: `Bearer ${token}`});
+                    Authorization: `There is fucking secret token ${token}`});
                 res.write(JSON.stringify({
                     message: 'Register success'
                 }));
@@ -72,7 +72,7 @@ const userLogin = async (req,res) => {
                 if(isMatch){
                     const token = jwt.sign({username: JSON.parse(result).username},jwt_env.secret_token,{ expiresIn: '1800s' });
                     res.writeHead(200,{...header,
-                        Authorization: `Bearer ${token}`});
+                        Authorization: `There is fucking secret token ${token}`});
                     res.write(JSON.stringify({
                         message: 'Login success'
                     }));

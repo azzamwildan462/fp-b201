@@ -14,7 +14,8 @@ const {
 } = require('./controllers/userControllers');
 
 const { 
-    getUserInfo
+    getUserInfo,
+    updateData
 } = require('./controllers/userDataController');
 
 // Connect to DB
@@ -26,8 +27,6 @@ mongoose.connect(mongo_env.url,(err) => {
 
 const server = http.createServer((req,res)=>{
     req.url = encodeURI(req.url);
-
-    // console.log(`${req.method}: ${req.url}`); //Debug
 
     //Ketika koneksi (req,res) user sangat lambat, melebihi 12345 ms
     res.setTimeout(12345,()=>{
@@ -41,10 +40,7 @@ const server = http.createServer((req,res)=>{
     //user/user69
     if(req.url.match(/\/user\/([a-zA-Z0-9])+$/) && req.method == 'GET'){
         const uname = req.url.split('/')[2];
-
         getUserInfo(req,res,uname);
-
-        // console.log(`success: ${uname}`);
     }
     //user/findNearby/10
     else if(req.url.match(/\/user\/findNearby\/([0-9])+$/) && req.method == 'GET'){
@@ -95,32 +91,21 @@ const server = http.createServer((req,res)=>{
     }
     //user/register
     else if(req.url == '/user/register' && req.method == 'POST'){
-
-        //Tambah user, tanpa validasi, validasnya nanti di controller
-
         createNewUser(req,res);
-        console.log(`success register`);
-
     }
     //user/login
     else if(req.url == '/user/login' && req.method == 'POST'){
         userLogin(req,res);
-        console.log(`success login`);
     }
     //user/user72/delete
     else if(req.url.match(/\/user\/([a-zA-Z0-9])+\/delete/) && req.method == 'DELETE'){
         const uname = req.url.split('/')[2];
-
         deleteUser(req,res,uname);
-        // console.log(`success delete: ${id}`);
-
     }
     //user/user123/update
     else if(req.url.match(/\/user\/([a-zA-Z0-9])+\/update/) && req.method == 'PUT'){
-        const id = req.url.split('/')[2];
-
-        // console.log(`success update: ${id}`);
-
+        const uname = req.url.split('/')[2];
+        updateData(req,res,uname)
     }
     else if(req.url == "/favicon.ico" && req.method == 'GET'){
         res.writeHead(404,header);
@@ -135,7 +120,7 @@ const server = http.createServer((req,res)=>{
 
 server.listen(api_env.port,(e)=>{
     if(e){
-        // console.log(e);
+        console.log(e);
     }
     else {
         console.log(`Server running on port ${api_env.port}`);

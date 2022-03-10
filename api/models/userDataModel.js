@@ -23,10 +23,14 @@ const createUserData = async (uname) => {
 };
 
 const updateData = async (uname,data) => {
-
+    const ret = await UserData.findOneAndUpdate({username: uname},data,{
+        new: true
+    });
+    return ret;
 };
 
 module.exports = {
     findByUname,
-    createUserData
+    createUserData,
+    updateData
 };
