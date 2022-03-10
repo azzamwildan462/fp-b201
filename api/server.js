@@ -8,11 +8,14 @@ const {
 } = require('./utils/yaml-parser');
 
 const { 
-    getUserInfo,
     createNewUser,
     userLogin,
     deleteUser
 } = require('./controllers/userControllers');
+
+const { 
+    getUserInfo
+} = require('./controllers/userDataController');
 
 // Connect to DB
 // console.log(mongo_env.url);
@@ -43,16 +46,11 @@ const server = http.createServer((req,res)=>{
 
         // console.log(`success: ${uname}`);
     }
-    //user/user69/findNearby/10
-    else if(req.url.match(/\/user\/([a-zA-Z0-9])+\/findNearby\/([0-9])+$/) && req.method == 'GET'){
-        const id = req.url.split('/')[2];
-        const total_req = parseInt(req.url.split('/')[4]);
+    //user/findNearby/10
+    else if(req.url.match(/\/user\/findNearby\/([0-9])+$/) && req.method == 'GET'){
+        const treshold = parseInt(req.url.split('/')[4]);
 
-        //apakah id tersedia di database dan apakah total_req kurang dari total user??
-        //jika iya, maka ambil data-datanya
-        //jika tidak, maka kirim pesan error
-
-        // console.log(`success: ${id} && ${total_req}`);
+        // console.log(`success: ${id} && ${treshold}`);
     }
     //user/minLevel/69/maxLevel/169
     else if(req.url.match(/\/user\/minLevel\/([0-9])+\/maxLevel\/([0-9])+$/) && req.method == 'GET'){
@@ -125,7 +123,7 @@ const server = http.createServer((req,res)=>{
 
     }
     else if(req.url == "/favicon.ico" && req.method == 'GET'){
-        res.writeHead(462,header);
+        res.writeHead(404,header);
         res.end(JSON.stringify({message: 'There is no favicon.ico, you should follow the damn train!'}));
     }
     //Invalid URLLLLLLL

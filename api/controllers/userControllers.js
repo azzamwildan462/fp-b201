@@ -15,34 +15,6 @@ const bcrypt = require('bcrypt');
 
 //Next, just play with JWT, CRUD, and data control
 
-const getUserInfo = async (req,res,uname) => {
-    try {
-        const user = await User.findByUname(uname);
-         if(!user){
-             res.writeHead(404,header);
-             res.write(JSON.stringify({
-                 message: 'Username not Found'
-             }));
-             res.end();
-         }
-         else {
-            const user_data = await UserData.findByUname(uname);
-
-            user_data.instruments = await binerToInstruments(user_data.instruments);
-
-            res.writeHead(200,header);
-            res.write(JSON.stringify(user_data));
-            res.end();
-         }
-    } catch (e){
-        res.writeHead(404,header);
-        res.write(JSON.stringify({
-            message: 'There is an error, maybe??'
-        }));
-        res.end();
-    }
-};
-
 const createNewUser = async (req,res) => {
     try {
         getBodyData(req, async result => {
@@ -51,7 +23,8 @@ const createNewUser = async (req,res) => {
                 return;
             }
             const success = await User.createUser(JSON.parse(result));
-            if(!success){
+            const success_data = await UserData.createUserData(JSON.parse(result).username);
+            if(!success || !success_data){
                 res.writeHead(500,header);
                 res.write(JSON.stringify({
                     message: 'An error occured on DB'
@@ -159,7 +132,6 @@ const deleteUser = async (req,res,uname) => {
 };
 
 module.exports = {
-    getUserInfo,
     createNewUser,
     userLogin,
     deleteUser

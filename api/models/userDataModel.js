@@ -10,10 +10,10 @@ const getAllUserCoordinate = async () => {
     return res_buffer.map(res => res.x_coord);
 };
 
-const createUser = async (user_data) => {
-    const buffer = new User(user_data);
-    const saved_user_data = await buffer.save();
-    // console.log(saved_user_data);
+const createUserData = async (uname) => {
+    const user_data_buffer = new UserData;
+    user_data_buffer.username = uname;
+    const saved_user_data = await user_data_buffer.save();
     if(!saved_user_data){
         return 0;
     }
@@ -22,7 +22,11 @@ const createUser = async (user_data) => {
     }
 };
 
+const updateData = async (uname,data) => {
+
+};
+
 module.exports = {
     findByUname,
-    createUser
+    createUserData
 };

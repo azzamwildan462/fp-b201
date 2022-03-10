@@ -11,7 +11,7 @@ const user_data_schema = mongoose.Schema({
     instruments: {
         type: String,
         max: 20,
-        required: true
+        // required: true
     },
     skill_level:{
         type: Number,
@@ -21,11 +21,11 @@ const user_data_schema = mongoose.Schema({
     },
     x_coord: {
         type: Number,
-        required: true
+        // required: true
     },
     y_coord: {
         type: Number,
-        required: true
+        // required: true
     },
     contacts: {
         whatsapp: {
