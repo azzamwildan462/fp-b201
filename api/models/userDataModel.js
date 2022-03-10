@@ -49,7 +49,14 @@ const updateData = async (uname,data) => {
 };
 
 const findByLevel = async (min_treshold,max_treshold) => {
+    const buff = await UserData.find({
+        skill_level: {
+            $gte: min_treshold,
+            $lte: max_treshold
+        }
+    });
 
+    return buff;
 }
 
 module.exports = {

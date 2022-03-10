@@ -16,7 +16,8 @@ const {
 const { 
     getUserInfo,
     updateData,
-    findNearby
+    findNearby,
+    findByLevel
 } = require('./controllers/userDataController');
 
 // Connect to DB
@@ -49,7 +50,6 @@ const server = http.createServer((req,res)=>{
         const treshold = parseInt(req.url.split('/')[4]);
 
         findNearby(req,res,uname,treshold);
-        // console.log(`success: ${id} && ${treshold}`);
     }
     //user/minLevel/69/maxLevel/169
     else if(req.url.match(/\/user\/minLevel\/([0-9])+\/maxLevel\/([0-9])+$/) && req.method == 'GET'){
@@ -60,6 +60,7 @@ const server = http.createServer((req,res)=>{
         //jika iya, maka ambil data-datanya
         //jika tidak, maka kirim pesan error1
 
+        findByLevel(req,res,min_level,max_level);
         // console.log(`success: ${min_level} && ${max_level}`);
     }
     //user/findByInstruments/100010010

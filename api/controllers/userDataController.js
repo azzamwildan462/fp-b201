@@ -59,9 +59,6 @@ const findNearby = async (req,res,uname,treshold) => {
             res.end();
             return;
         }
-        const x_buff = await UserData.getAllUserCoordinateX();
-        const y_buff = await UserData.getAllUserCoordinateY();
-        const username_buffer = await UserData.getUsername();
         var index_filtered = [];
         var coord_filtered = [];
         var fixed_uname = [];
@@ -158,7 +155,23 @@ const updateData = async (req,res,uname) => {
 
 const findByLevel = async (req,res,min_level,max_level) => {
     try {
-        //asdasdqweasd
+        const users = await UserData.findByLevel(min_level,max_level);
+
+        if(!users){
+            res.writeHead(404,header);
+            res.write(JSON.stringify({
+                message: 'There is no users on that treshold'
+            }));
+            res.end();
+            return;
+        }
+
+        // console.log(users);
+
+        res.writeHead(200,header);
+        res.write(JSON.stringify(users.map(res => res.username)));
+        res.end();
+
     } catch (e){
         res.writeHead(404,header);
         res.write(JSON.stringify({
