@@ -12,7 +12,7 @@ const createUser = async (user) => {
 
     const buffer = new User(user);
     const saved_user = await buffer.save();
-    console.log(saved_user);
+    // console.log(saved_user);
     if(!saved_user){
         return 0;
     }

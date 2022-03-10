@@ -6,6 +6,7 @@ try {
     const buffer = yaml.load(fs.readFileSync('env.yaml', 'utf8'));
     api_env = buffer.api;
     mongo_env = buffer.mongo;
+    jwt_env = buffer.jwt;
   } catch (e) {
     console.log(e);
   }
@@ -16,5 +17,6 @@ try {
 
 module.exports = {
 api_env,
-mongo_env
+mongo_env,
+jwt_env
 };
