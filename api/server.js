@@ -102,6 +102,10 @@ const server = http.createServer((req,res)=>{
         console.log(`success register`);
 
     }
+    //user/login
+    else if(req.url == '/user/login' && req.method == 'POST'){
+
+    }
     //user/user72/delete
     else if(req.url.match(/\/user\/([a-zA-Z0-9])+\/delete/) && req.method == 'DELETE'){
         const id = req.url.split('/')[2];

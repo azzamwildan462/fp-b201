@@ -3,9 +3,9 @@ const User = require('../models/userModel');
 const UserData = require('../models/userDataModel');
 const header = require('../utils/header');
 const {binerToInstruments} = require('../utils/binerToInstruments');
-const {getBodyData} = require('../utils/requestParser');
-const { parse } = require('querystring');
-
+const {getBodyData,
+getHeader} = require('../utils/requestParser');
+const jwt_env = require('../utils/yaml-parser');
 
 //Next, just play with JWT, CRUD, and data control
 
@@ -24,8 +24,6 @@ const getUserInfo = async (req,res,uname) => {
             const user_data = await UserData.findByUname(uname);
 
             user_data.instruments = await binerToInstruments(user_data.instruments);
-
-            // console.log(user_data.instruments);
 
             res.writeHead(200,header);
             res.write(JSON.stringify(user_data));
@@ -65,8 +63,6 @@ const createNewUser = async (req,res) => {
         res.end();
     }
 };
-
-// users user_datas
 
 module.exports = {
     getUserInfo,

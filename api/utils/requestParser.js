@@ -1,5 +1,14 @@
 const { parse } = require('querystring');
 
+const getHeader = (req, headerName) => new Promise((resolve, reject) => {
+    try {
+        const header = req.headers[`${headerName}`];
+        resolve(header);
+    } catch (e) {
+        reject(e);
+    }
+});
+
 const getBodyData = (req,callback) => {
     let body = '';
     req.on('data', chunk => {
@@ -12,5 +21,6 @@ const getBodyData = (req,callback) => {
 };
 
 module.exports = {
-getBodyData
+getBodyData,
+getHeader
 };
