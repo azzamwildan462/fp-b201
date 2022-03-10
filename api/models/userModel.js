@@ -20,7 +20,14 @@ const createUser = async (user) => {
         return 1;
     }
 };
+
+const deleteByUname = async (uname) => {
+    const res = await User.deleteOne({username: uname});
+    return res;
+}
+
 module.exports = {
     findByUname,
-    createUser
+    createUser,
+    deleteByUname
 };

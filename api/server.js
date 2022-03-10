@@ -9,7 +9,9 @@ const {
 
 const { 
     getUserInfo,
-    createNewUser
+    createNewUser,
+    userLogin,
+    deleteUser
 } = require('./controllers/userControllers');
 
 // Connect to DB
@@ -104,22 +106,20 @@ const server = http.createServer((req,res)=>{
     }
     //user/login
     else if(req.url == '/user/login' && req.method == 'POST'){
-
+        userLogin(req,res);
+        console.log(`success login`);
     }
     //user/user72/delete
     else if(req.url.match(/\/user\/([a-zA-Z0-9])+\/delete/) && req.method == 'DELETE'){
-        const id = req.url.split('/')[2];
+        const uname = req.url.split('/')[2];
 
-        //Delete by username
-
+        deleteUser(req,res,uname);
         // console.log(`success delete: ${id}`);
 
     }
     //user/user123/update
     else if(req.url.match(/\/user\/([a-zA-Z0-9])+\/update/) && req.method == 'PUT'){
         const id = req.url.split('/')[2];
-
-        //Update all entity by username
 
         // console.log(`success update: ${id}`);
 
