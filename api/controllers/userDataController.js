@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const User = require('../models/userModel');
 const UserData = require('../models/userDataModel');
 const {header} = require('../utils/header');
-const {binerToInstruments} = require('../utils/binerToInstruments');
+const {binaryToInstruments,instrumentsToBinary,compare} = require('../utils/instrumentsDecoder');
 const {getBodyData,
 getHeader} = require('../utils/requestParser');
 const {jwt_env} = require('../utils/yaml-parser');
@@ -34,7 +34,7 @@ const getUserInfo = async (req,res,uname) => {
                 return;
             }
 
-            user_data.instruments = await binerToInstruments(user_data.instruments);
+            user_data.instruments = await binaryToInstruments(user_data.instruments);
 
             res.writeHead(200,header);
             res.write(JSON.stringify(user_data));
@@ -181,9 +181,52 @@ const findByLevel = async (req,res,min_level,max_level) => {
     }
 }
 
+const findByInstrumentsBinary = async (req,res,instruments_binary) => {
+    try {
+        const user_datas = await UserData.getInstruments();
+        // console.log(user_datas);
+
+        var ret_buffer = [];
+        // console.log(user_datas.username.length);
+        for (let index = 0,ret_index = 0; index < user_datas.username.length; index++) {
+            if(!user_datas.instruments[index]){
+                continue;
+            }
+            if(await compare(instruments_binary,user_datas.instruments[index])==1){
+                ret_buffer[ret_index] = user_datas.username[index];
+                ret_index++;
+            }
+        }
+        res.writeHead(200,header);
+        res.write(JSON.stringify(ret_buffer));
+        res.end();
+    }catch(e){
+        res.writeHead(404,header);
+        res.write(JSON.stringify({
+            message: 'There is an error, maybe??'
+        }));
+        res.end();
+    }
+}
+
+const findByInstruments = async (req,res,instruments) => {
+    try {
+        const binary = await instrumentsToBinary(instruments);
+
+        // console.log(binary);
+    }catch(e){
+        res.writeHead(404,header);
+        res.write(JSON.stringify({
+            message: 'There is an error, maybe??'
+        }));
+        res.end();
+    }
+}
 module.exports = {
     getUserInfo,
     findNearby,
     updateData,
-    findByLevel
+    findByLevel,
+    findByInstrumentsBinary,
+    findByInstruments
 };

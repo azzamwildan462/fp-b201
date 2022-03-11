@@ -17,7 +17,9 @@ const {
     getUserInfo,
     updateData,
     findNearby,
-    findByLevel
+    findByLevel,
+    findByInstruments,
+    findByInstrumentsBinary
 } = require('./controllers/userDataController');
 
 // Connect to DB
@@ -56,22 +58,19 @@ const server = http.createServer((req,res)=>{
         const min_level = parseInt(req.url.split('/')[3]);
         const max_level = parseInt(req.url.split('/')[5]);
 
-        //apakah min_level < max_level && min_level < 255 && max_level > 0??
-        //jika iya, maka ambil data-datanya
-        //jika tidak, maka kirim pesan error1
-
         findByLevel(req,res,min_level,max_level);
-        // console.log(`success: ${min_level} && ${max_level}`);
     }
     //user/findByInstruments/100010010
     else if(req.url.match(/\/user\/findByInstruments\/([0-1])+$/) && req.method == 'GET'){
-        const instruments = parseInt(req.url.split('/')[3]);
+        const instruments = req.url.split('/')[3];
 
-        //apakah array instruments sesuai dengan max_instruments di DB??
-        //jika iya, maka ambil data-datanya
-        //jika tidak, maka kirim pesan error
+        findByInstrumentsBinary(req,res,instruments);
+    }
+    //user/findByInstruments/gitarbassdrum
+    else if(req.url.match(/\/user\/findByInstruments\/([a-zA-Z-])+$/) && req.method == 'GET'){
+        const instruments = req.url.split('/')[4];
 
-        // console.log(`success: ${instruments}`);
+        findByInstruments(req,res,instruments);
     }
     //user/user69/findNearby/10/findByInstruments/111010010/minLevel/12/maxLevel/123
     else if(req.url.match(/\/user\/([a-zA-Z0-9])+\/findNearby\/([0-9])+\/findByInstruments\/([0-1])+\/minLevel\/([0-9])+\/maxLevel\/([0-9])+$/) && req.method == 'GET'){

@@ -58,7 +58,14 @@ const findByLevel = async (min_treshold,max_treshold) => {
 
     return buff;
 }
+const getInstruments = async () => {
+    var buffer = [];
+    const res_buffer = await UserData.find({});
+    buffer.instruments = res_buffer.map(res => res.instruments);
+    buffer.username = res_buffer.map(res => res.username);
 
+    return buffer;
+}
 module.exports = {
     findByUname,
     createUserData,
@@ -67,5 +74,6 @@ module.exports = {
     getAllUserCoordinateX,
     getAllUserCoordinateY,
     getUsername,
-    filterCoordinate
+    filterCoordinate,
+    getInstruments
 };

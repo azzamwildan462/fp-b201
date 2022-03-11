@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const User = require('../models/userModel');
 const UserData = require('../models/userDataModel');
 const {header} = require('../utils/header');
-const {binerToInstruments} = require('../utils/binerToInstruments');
+const {binaryToInstruments} = require('../utils/instrumentsDecoder');
 const {getBodyData,
 getHeader} = require('../utils/requestParser');
 const {jwt_env} = require('../utils/yaml-parser');
@@ -10,8 +10,6 @@ const {safetyCreateUser,
 safetyUserLogin} = require('../utils/safety');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
-
 
 //Next, just play with data control
 
