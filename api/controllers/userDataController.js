@@ -166,8 +166,6 @@ const findByLevel = async (req,res,min_level,max_level) => {
             return;
         }
 
-        // console.log(users);
-
         res.writeHead(200,header);
         res.write(JSON.stringify(users.map(res => res.username)));
         res.end();
@@ -188,6 +186,7 @@ const findByInstrumentsBinary = async (req,res,instruments_binary) => {
 
         var ret_buffer = [];
         // console.log(user_datas.username.length);
+        // console.log(instruments_binary);
         for (let index = 0,ret_index = 0; index < user_datas.username.length; index++) {
             if(!user_datas.instruments[index]){
                 continue;
@@ -237,11 +236,104 @@ const findByInstruments = async (req,res,instruments) => {
         res.end();
     }
 }
+const findWithManyParams = async (req,res,uname,treshold,instruments_binary,min_level,max_level)=> {
+    try{
+        const ret_all = [];
+
+        //Nearby
+        const user = await UserData.findByUname(uname);
+        if(!user){
+            res.writeHead(404,header);
+            res.write(JSON.stringify({
+                message: 'Username not Found'
+            }));
+            res.end();
+            return;
+        }
+        var index_filtered = [];
+        var coord_filtered = [];
+        var fixed_uname = [];
+
+        coord_filtered = await UserData.filterCoordinate();
+
+        for (let index = 0,filter_iterator = 0; index < coord_filtered.username.length; index++) {
+            const jarak_buffer = pythagoras(user.x_coord,user.y_coord,coord_filtered.x[index],coord_filtered.y[index]);
+            if(jarak_buffer <= treshold){
+                index_filtered[filter_iterator] = index;
+                filter_iterator++;
+            }
+        }
+        for (let index = 0; index < index_filtered.length; index++) {
+            fixed_uname[index] = coord_filtered.username[index_filtered[index]];
+            
+        }
+
+        // res.writeHead(200,header);
+        // res.write(JSON.stringify(fixed_uname));
+        // res.end();
+        // return;
+
+        //Instruments by binary
+        const user_datas = await UserData.getInstruments();
+        // console.log(user_datas);
+
+        var ret_buffer = [];
+        // console.log(instruments_binary);
+        for (let index = 0,ret_index = 0; index < user_datas.username.length; index++) {
+            if(!user_datas.instruments[index]){
+                continue;
+            }
+            // console.log(instruments_binary," asdasdsa ",user_datas.instruments[index]);
+            if(await compare(instruments_binary,user_datas.instruments[index])==1){
+                ret_buffer[ret_index] = user_datas.username[index];
+                ret_index++;
+            }
+        }
+        // res.writeHead(200,header);
+        // res.write(JSON.stringify(ret_buffer));
+        // res.end();
+        // return;
+        
+        //Level
+        const users = await UserData.findByLevel(min_level,max_level);
+
+        if(!users){
+            res.writeHead(404,header);
+            res.write(JSON.stringify({
+                message: 'There is no users on that treshold'
+            }));
+            res.end();
+            return;
+        }
+        
+        // ret_all["nearby"] = fixed_uname;
+        // ret_all["by instruments"] = ret_buffer;
+        // ret_all["by level"] = users.map(res => res.username);
+        ret_all[0] = fixed_uname;
+        ret_all[1] = ret_buffer;
+        ret_all[2] = users.map(res => res.username);
+
+        // console.log(ret_all);
+
+        res.writeHead(200,header);
+        res.write(JSON.stringify(ret_all));
+        // res.write(ret_all);
+        res.end();
+
+    }catch(e){
+        res.writeHead(404,header);
+        res.write(JSON.stringify({
+            message: 'There is an error, maybe??'
+        }));
+        res.end();
+    }
+}
 module.exports = {
     getUserInfo,
     findNearby,
     updateData,
     findByLevel,
     findByInstrumentsBinary,
-    findByInstruments
+    findByInstruments,
+    findWithManyParams
 };

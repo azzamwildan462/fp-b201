@@ -1,5 +1,5 @@
 const binaryToInstruments = async (biner)=> {
-    var buffer;
+    var buffer = "";
     if(biner.charAt(0)== '1'){
         buffer = "Bass";
         buffer += ", ";
@@ -102,7 +102,7 @@ const compare = async (binary1,binary2)=> {
     if(binary1.length >= binary2.length){
         used_lenght = binary1.length;
     }
-    // console.log("asdasdas",binary1);
+    // console.log("asdasdas",binary1," ",used_lenght);
     for (let index = 0; index < used_lenght; index++) {
         // Safety
         if(index>binary1.length){

@@ -11,11 +11,17 @@ safetyUserLogin} = require('../utils/safety');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-//Next, just play with data control
-
 const createNewUser = async (req,res) => {
     try {
         getBodyData(req, async result => {
+            if(!result){
+                res.writeHead(404,header);
+                res.write(JSON.stringify({
+                    message: 'Error with no body data'
+                }));
+                res.end();
+                return;
+            }
             if(!await safetyCreateUser(JSON.parse(result),res))
             {
                 return;
@@ -51,6 +57,14 @@ const createNewUser = async (req,res) => {
 const userLogin = async (req,res) => {
     try {
         getBodyData(req, async result => {
+            if(!result){
+                res.writeHead(404,header);
+                res.write(JSON.stringify({
+                    message: 'Error with no body data'
+                }));
+                res.end();
+                return;
+            }
             if(!await safetyUserLogin(JSON.parse(result),res))
             {
                 return;
