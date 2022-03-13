@@ -38,7 +38,60 @@ const binaryToInstruments = async (biner)=> {
 const instrumentsToBinary = async (instruments) => {
     // console.log(instruments);
     var buffer = [];
+    var ret = [];
     buffer = instruments.split('-');
+
+    if(instruments.toLowerCase().includes('bass')){
+        ret = '1';
+    }
+    else {
+        ret +='0';
+    }
+    if(instruments.toLowerCase().includes('gitar')){
+        ret += '1';
+    }
+    else {
+        ret +='0';
+    }
+    if(instruments.toLowerCase().includes('keyboard')){
+        ret += '1';
+    }
+    else {
+        ret +='0';
+    }
+    if(instruments.toLowerCase().includes('drum')){
+        ret += '1';
+    }
+    else {
+        ret +='0';
+    }
+    if(instruments.toLowerCase().includes('vocal')){
+        ret += '1';
+    }
+    else {
+        ret +='0';
+    }
+    if(instruments.toLowerCase().includes('violin')){
+        ret += '1';
+    }
+    else {
+        ret +='0';
+    }
+    if(instruments.toLowerCase().includes('string')){
+        ret += '1';
+    }
+    else {
+        ret +='0';
+    }
+    if(instruments.toLowerCase().includes('piano')){
+        ret += '1';
+    }
+    else {
+        ret +='0';
+    }
+
+
+    return ret;
 
 };
 
@@ -49,6 +102,7 @@ const compare = async (binary1,binary2)=> {
     if(binary1.length >= binary2.length){
         used_lenght = binary1.length;
     }
+    // console.log("asdasdas",binary1);
     for (let index = 0; index < used_lenght; index++) {
         // Safety
         if(index>binary1.length){
@@ -73,7 +127,7 @@ const compare = async (binary1,binary2)=> {
         // }
     }
     // console.log(total_match,"     ",one_logic_total);
-    if(total_match == one_logic_total){
+    if(total_match == one_logic_total && one_logic_total > 0){
         return 1
     }
     else {

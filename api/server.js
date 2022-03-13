@@ -62,11 +62,11 @@ const server = http.createServer((req,res)=>{
     }
     //user/findByInstruments/100010010
     else if(req.url.match(/\/user\/findByInstruments\/([0-1])+$/) && req.method == 'GET'){
-        const instruments = req.url.split('/')[3];
+        const instruments = req.url.split('/')[4];
 
         findByInstrumentsBinary(req,res,instruments);
     }
-    //user/findByInstruments/gitarbassdrum
+    //user/findByInstruments/gitar-bass-drum
     else if(req.url.match(/\/user\/findByInstruments\/([a-zA-Z-])+$/) && req.method == 'GET'){
         const instruments = req.url.split('/')[4];
 

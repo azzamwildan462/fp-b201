@@ -211,9 +211,24 @@ const findByInstrumentsBinary = async (req,res,instruments_binary) => {
 
 const findByInstruments = async (req,res,instruments) => {
     try {
+        const user_datas = await UserData.getInstruments();
+        
         const binary = await instrumentsToBinary(instruments);
+        var ret_buffer = [];
+        // console.log(JSON.stringify(binary));
+        for (let index = 0,ret_index = 0; index < user_datas.username.length; index++) {
+            if(!user_datas.instruments[index]){
+                continue;
+            }
+            if(await compare(binary,user_datas.instruments[index])==1){
+                ret_buffer[ret_index] = user_datas.username[index];
+                ret_index++;
+            }
+        }
+        res.writeHead(200,header);
+        res.write(JSON.stringify(ret_buffer));
+        res.end();
 
-        // console.log(binary);
     }catch(e){
         res.writeHead(404,header);
         res.write(JSON.stringify({
