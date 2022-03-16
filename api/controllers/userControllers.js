@@ -117,23 +117,50 @@ const deleteUser = async (req,res,uname) => {
                 message: 'Username not Found'
             }));
             res.end();
+            return;
+        }
+        const authHeader = await getHeader(req, 'authorization');
+        if(!authHeader){
+            res.writeHead(404,header);
+            res.write(JSON.stringify({
+                message: 'Please login'
+            }));
+            res.end();
+            return;
+        }
+        const authToken = authHeader.split(' ')[5];
+        if(!authToken){
+            res.writeHead(404,header);
+            res.write(JSON.stringify({
+                message: 'Do you login correctly?'
+            }));
+            res.end();
+            return;
+        }
+        const user_verified = jwt.verify(authToken,jwt_env.secret_token);
+        if(!user_verified){
+            res.writeHead(404,header);
+            res.write(JSON.stringify({
+                message: 'You just doesnt register properly!'
+            }));
+            res.end();
+            return;
+        }
+        
+        const ret = await User.deleteByUname(uname);
+        if(!ret){
+            res.writeHead(500,header);
+            res.write(JSON.stringify({
+                message: 'Error occured while delete this user'
+            }));
+            res.end();
         }
         else {
-            const ret = await User.deleteByUname(uname);
-
-            if(!ret){
-                res.writeHead(500,header);
-                res.write(JSON.stringify({
-                    message: 'Error occured while delete this user'
-                }));
-                res.end();
-            }
-            else {
-                res.writeHead(200,header);
-                res.write(JSON.stringify(ret));
-                res.end();
-            }
+            res.writeHead(200,header);
+            res.write(JSON.stringify(ret));
+            res.end();
         }
+        
     } catch (e){
         res.writeHead(404,header);
         res.write(JSON.stringify({

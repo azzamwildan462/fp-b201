@@ -36,3 +36,5 @@ Rencana:
 Ctt:
 
 - JWT ->
+
+//Ratelimit untuk membatasi request per detik -> nginx

@@ -17,6 +17,15 @@ const safetyCreateUser = async (user,res) => {
         res.end();
         return 0;
     }
+
+    if(JSON.stringify(user.password).length < 6){
+        res.writeHead(404,header);
+        res.write(JSON.stringify({
+            message: 'Password too short'
+        }));
+        res.end();
+        return 0;
+    }
     
     const buffer = await User.findByUname(user.username);
     if(!buffer){
@@ -46,6 +55,15 @@ const safetyUserLogin = async (user,res) => {
         res.writeHead(404,header);
         res.write(JSON.stringify({
             message: 'Insert Password!'
+        }));
+        res.end();
+        return 0;
+    }
+    // console.log(user.password.lenght);
+    if(JSON.stringify(user.password).length < 6){
+        res.writeHead(404,header);
+        res.write(JSON.stringify({
+            message: 'Password too short'
         }));
         res.end();
         return 0;
