@@ -1,8 +1,10 @@
 const User = require('../models/userModel');
 const {header} = require('./header');
+const { status_code } = require('js-yaml')
+
 const safetyCreateUser = async (user,res) => {
     if(!user.username){
-        res.writeHead(404,header);
+        res.writeHead(status_code.BAD_REQUEST,header);
         res.write(JSON.stringify({
             message: 'Insert Username!'
         }));
@@ -10,7 +12,7 @@ const safetyCreateUser = async (user,res) => {
         return 0;
     }
     if(!user.password){
-        res.writeHead(404,header);
+        res.writeHead(status_code.BAD_REQUEST,header);
         res.write(JSON.stringify({
             message: 'Insert Password!'
         }));
@@ -19,7 +21,7 @@ const safetyCreateUser = async (user,res) => {
     }
 
     if(JSON.stringify(user.password).length < 6){
-        res.writeHead(404,header);
+        res.writeHead(status_code.BAD_REQUEST,header);
         res.write(JSON.stringify({
             message: 'Password too short'
         }));
@@ -32,7 +34,7 @@ const safetyCreateUser = async (user,res) => {
         return 1;
     }
     else {
-        res.writeHead(404,header);
+        res.writeHead(status_code.BAD_REQUEST,header);
         res.write(JSON.stringify({
             message: 'Username has been used'
         }));
@@ -44,7 +46,7 @@ const safetyCreateUser = async (user,res) => {
 
 const safetyUserLogin = async (user,res) => {
     if(!user.username){
-        res.writeHead(404,header);
+        res.writeHead(status_code.BAD_REQUEST,header);
         res.write(JSON.stringify({
             message: 'Insert Username!'
         }));
@@ -52,7 +54,7 @@ const safetyUserLogin = async (user,res) => {
         return 0;
     }
     if(!user.password){
-        res.writeHead(404,header);
+        res.writeHead(status_code.BAD_REQUEST,header);
         res.write(JSON.stringify({
             message: 'Insert Password!'
         }));
@@ -61,7 +63,7 @@ const safetyUserLogin = async (user,res) => {
     }
     // console.log(user.password.lenght);
     if(JSON.stringify(user.password).length < 6){
-        res.writeHead(404,header);
+        res.writeHead(status_code.BAD_REQUEST,header);
         res.write(JSON.stringify({
             message: 'Password too short'
         }));
@@ -71,7 +73,7 @@ const safetyUserLogin = async (user,res) => {
 
     const buffer = await User.findByUname(user.username);
     if(!buffer){
-        res.writeHead(404,header);
+        res.writeHead(status_code.NOT_FOUND,header);
         res.write(JSON.stringify({
             message: 'Username not found'
         }));

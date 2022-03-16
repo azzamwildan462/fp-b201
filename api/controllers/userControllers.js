@@ -5,7 +5,7 @@ const {header} = require('../utils/header');
 const {binaryToInstruments} = require('../utils/instrumentsDecoder');
 const {getBodyData,
 getHeader} = require('../utils/requestParser');
-const {jwt_env} = require('../utils/yaml-parser');
+const {jwt_env,status_code} = require('../utils/yaml-parser');
 const {safetyCreateUser,
 safetyUserLogin} = require('../utils/safety');
 const jwt = require('jsonwebtoken');
@@ -15,7 +15,7 @@ const createNewUser = async (req,res) => {
     try {
         getBodyData(req, async result => {
             if(!result){
-                res.writeHead(404,header);
+                res.writeHead(status_code.BAD_REQUEST,header);
                 res.write(JSON.stringify({
                     message: 'Error with no body data'
                 }));
@@ -29,7 +29,7 @@ const createNewUser = async (req,res) => {
             const success = await User.createUser(JSON.parse(result));
             const success_data = await UserData.createUserData(JSON.parse(result).username);
             if(!success || !success_data){
-                res.writeHead(500,header);
+                res.writeHead(status_code.INTERNAL_SERVER_ERROR,header);
                 res.write(JSON.stringify({
                     message: 'An error occured on DB'
                 }));
@@ -37,7 +37,7 @@ const createNewUser = async (req,res) => {
             }
             else {
                 const token = await jwt.sign({username: JSON.parse(result).username},jwt_env.secret_token,{ expiresIn: '1800s' });
-                res.writeHead(200,{...header,
+                res.writeHead(status_code.CREATED,{...header,
                     Authorization: `There is fucking secret token ${token}`});
                 res.write(JSON.stringify({
                     message: 'Register success'
@@ -46,7 +46,7 @@ const createNewUser = async (req,res) => {
             }
         })
     } catch (e){
-        res.writeHead(404,header);
+        res.writeHead(status_code.INTERNAL_SERVER_ERROR,header);
         res.write(JSON.stringify({
             message: 'There is an error, maybe??'
         }));
@@ -58,7 +58,7 @@ const userLogin = async (req,res) => {
     try {
         getBodyData(req, async result => {
             if(!result){
-                res.writeHead(404,header);
+                res.writeHead(status_code.BAD_REQUEST,header);
                 res.write(JSON.stringify({
                     message: 'Error with no body data'
                 }));
@@ -74,7 +74,7 @@ const userLogin = async (req,res) => {
 
             bcrypt.compare(JSON.parse(result).password,user.password,function(err,isMatch){
                 if(err){
-                    res.writeHead(500,header);
+                    res.writeHead(status_code.INTERNAL_SERVER_ERROR,header);
                     res.write(JSON.stringify({
                         message: 'There is internal server error'
                     }));
@@ -83,7 +83,7 @@ const userLogin = async (req,res) => {
                 }
                 if(isMatch){
                     const token = jwt.sign({username: JSON.parse(result).username},jwt_env.secret_token,{ expiresIn: '1800s' });
-                    res.writeHead(200,{...header,
+                    res.writeHead(status_code.OK,{...header,
                         Authorization: `There is fucking secret token ${token}`});
                     res.write(JSON.stringify({
                         message: 'Login success'
@@ -91,7 +91,7 @@ const userLogin = async (req,res) => {
                     res.end();
                 }
                 else {
-                    res.writeHead(404,header);
+                    res.writeHead(status_code.BAD_REQUEST,header);
                     res.write(JSON.stringify({
                         message: 'Invalid Password!'
                     }));
@@ -100,7 +100,7 @@ const userLogin = async (req,res) => {
             })
         })
     }catch(e){
-        res.writeHead(404,header);
+        res.writeHead(status_code.INTERNAL_SERVER_ERROR,header);
         res.write(JSON.stringify({
             message: 'There is an error, maybe??'
         }));
@@ -112,7 +112,7 @@ const deleteUser = async (req,res,uname) => {
     try {
         const buff = await User.findByUname(uname);
         if(!buff){
-            res.writeHead(404,header);
+            res.writeHead(status_code.NOT_FOUND,header);
             res.write(JSON.stringify({
                 message: 'Username not Found'
             }));
@@ -121,7 +121,7 @@ const deleteUser = async (req,res,uname) => {
         }
         const authHeader = await getHeader(req, 'authorization');
         if(!authHeader){
-            res.writeHead(404,header);
+            res.writeHead(status_code.UNAUTHORIZED,header);
             res.write(JSON.stringify({
                 message: 'Please login'
             }));
@@ -130,7 +130,7 @@ const deleteUser = async (req,res,uname) => {
         }
         const authToken = authHeader.split(' ')[5];
         if(!authToken){
-            res.writeHead(404,header);
+            res.writeHead(status_code.UNAUTHORIZED,header);
             res.write(JSON.stringify({
                 message: 'Do you login correctly?'
             }));
@@ -139,7 +139,7 @@ const deleteUser = async (req,res,uname) => {
         }
         const user_verified = jwt.verify(authToken,jwt_env.secret_token);
         if(!user_verified){
-            res.writeHead(404,header);
+            res.writeHead(status_code.UNAUTHORIZED,header);
             res.write(JSON.stringify({
                 message: 'You just doesnt register properly!'
             }));
@@ -149,20 +149,20 @@ const deleteUser = async (req,res,uname) => {
         
         const ret = await User.deleteByUname(uname);
         if(!ret){
-            res.writeHead(500,header);
+            res.writeHead(status_code.INTERNAL_SERVER_ERROR,header);
             res.write(JSON.stringify({
                 message: 'Error occured while delete this user'
             }));
             res.end();
         }
         else {
-            res.writeHead(200,header);
+            res.writeHead(status_code.OK,header);
             res.write(JSON.stringify(ret));
             res.end();
         }
         
     } catch (e){
-        res.writeHead(404,header);
+        res.writeHead(status_code.INTERNAL_SERVER_ERROR,header);
         res.write(JSON.stringify({
             message: 'There is an error, maybe??'
         }));

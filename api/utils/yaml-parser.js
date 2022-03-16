@@ -2,11 +2,17 @@ var yaml = require('js-yaml');
 var fs = require('fs');
 
 var mongo_env;
+var api_env;
+var jwt_env;
+var status_code;
 try {
     const buffer = yaml.load(fs.readFileSync('env.yaml', 'utf8'));
     api_env = buffer.api;
     mongo_env = buffer.mongo;
     jwt_env = buffer.jwt;
+
+    status_code = yaml.load(fs.readFileSync('./utils/httpStatusCode.yaml','utf8'));
+
   } catch (e) {
     console.log(e);
   }
@@ -18,5 +24,6 @@ try {
 module.exports = {
 api_env,
 mongo_env,
-jwt_env
+jwt_env,
+status_code
 };

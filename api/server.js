@@ -4,7 +4,8 @@ const { url } = require('inspector');
 const { header } = require('./utils/header');
 const {
     api_env,
-    mongo_env
+    mongo_env,
+    status_code
 } = require('./utils/yaml-parser');
 
 const { 
@@ -38,8 +39,8 @@ const server = http.createServer((req,res)=>{
     req.url = encodeURI(req.url);
 
     //Ketika koneksi (req,res) user sangat lambat, melebihi 12345 ms
-    res.setTimeout(12345,()=>{
-        res.writeHead(408,header);
+    res.setTimeout(api_env.timeout,()=>{
+        res.writeHead(status_code.REQUEST_TIMEOUT,header);
         res.end(JSON.stringify({message: 'HTTP Error 408 - Request Timeout'}));
     })
 
@@ -86,8 +87,6 @@ const server = http.createServer((req,res)=>{
         const max_level = parseInt(req.url.split('/')[10]);
 
         findWithManyParams(req,res,uname,treshold,instruments_binary,min_level,max_level);
-
-        // console.log(`success: ${uname} && ${treshold} && ${instruments_binary} && ${min_level} && ${max_level}`);
     }
     //user/register
     else if(req.url == '/user/register' && req.method == 'POST'){
@@ -108,12 +107,12 @@ const server = http.createServer((req,res)=>{
         updateData(req,res,uname)
     }
     else if(req.url == "/favicon.ico" && req.method == 'GET'){
-        res.writeHead(404,header);
+        res.writeHead(status_code.NOT_FOUND,header);
         res.end(JSON.stringify({message: 'There is no favicon.ico, you should follow the damn train!'}));
     }
     //Invalid URLLLLLLL
     else {
-        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.writeHead(status_code.NOT_FOUND, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: 'Invalid URL' }));
     }
 })
