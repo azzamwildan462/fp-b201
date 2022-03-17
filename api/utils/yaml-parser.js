@@ -20,7 +20,7 @@ try {
   var url_buffer = "mongodb://";
   mongo_env.url = url_buffer.concat(mongo_env.ip,":",mongo_env.port,"/",mongo_env.db);
 
-
+  // console.log(status_code.BAD_REQUEST);
 module.exports = {
 api_env,
 mongo_env,
