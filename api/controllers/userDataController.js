@@ -67,7 +67,7 @@ const findNearby = async (req,res,uname,treshold) => {
 
         for (let index = 0,filter_iterator = 0; index < coord_filtered.username.length; index++) {
             const jarak_buffer = pythagoras(user.x_coord,user.y_coord,coord_filtered.x[index],coord_filtered.y[index]);
-            if(jarak_buffer <= treshold){
+            if(jarak_buffer <= treshold && user.username != coord_filtered.username[index]){
                 index_filtered[filter_iterator] = index;
                 filter_iterator++;
             }
@@ -75,6 +75,15 @@ const findNearby = async (req,res,uname,treshold) => {
         for (let index = 0; index < index_filtered.length; index++) {
             fixed_uname[index] = coord_filtered.username[index_filtered[index]];
             
+        }
+
+        if(fixed_uname.length==0){
+            res.writeHead(status_code.NOT_FOUND,header);
+            res.write(JSON.stringify({
+                message: 'There is no users on that treshold'
+            }));
+            res.end();
+            return;
         }
 
         res.writeHead(status_code.OK,header);
@@ -154,9 +163,36 @@ const updateData = async (req,res,uname) => {
 
 const findByLevel = async (req,res,min_level,max_level) => {
     try {
+        if(min_level>max_level){
+            res.writeHead(status_code.BAD_REQUEST,header);
+            res.write(JSON.stringify({
+                message: 'min_level must lower than max_level'
+            }));
+            res.end();
+            return;
+        }
+        if(min_level < 0 || max_level > 255){
+            res.writeHead(status_code.BAD_REQUEST,header);
+            res.write(JSON.stringify({
+                message: 'min_level and max level must be at 0 - 255'
+            }));
+            res.end();
+            return;
+        }
+
         const users = await UserData.findByLevel(min_level,max_level);
 
         if(!users){
+            res.writeHead(status_code.NOT_FOUND,header);
+            res.write(JSON.stringify({
+                message: 'There is no users on that treshold'
+            }));
+            res.end();
+            return;
+        }
+
+        
+        if(users.map(res => res.username).length==0){
             res.writeHead(status_code.NOT_FOUND,header);
             res.write(JSON.stringify({
                 message: 'There is no users on that treshold'
@@ -192,6 +228,16 @@ const findByInstrumentsBinary = async (req,res,instruments_binary) => {
                 ret_index++;
             }
         }
+
+        if(ret_buffer.length == 0){
+            res.writeHead(status_code.NOT_FOUND,header);
+            res.write(JSON.stringify({
+                message: 'There is no one that can play that instruments'
+            }));
+            res.end();
+            return;
+        }
+
         res.writeHead(status_code.OK,header);
         res.write(JSON.stringify(ret_buffer));
         res.end();
@@ -219,6 +265,16 @@ const findByInstruments = async (req,res,instruments) => {
                 ret_index++;
             }
         }
+
+        if(ret_buffer.length == 0){
+            res.writeHead(status_code.NOT_FOUND,header);
+            res.write(JSON.stringify({
+                message: 'There is no one that can play that instruments'
+            }));
+            res.end();
+            return;
+        }
+
         res.writeHead(status_code.OK,header);
         res.write(JSON.stringify(ret_buffer));
         res.end();
@@ -231,7 +287,7 @@ const findByInstruments = async (req,res,instruments) => {
         res.end();
     }
 }
-const findWithManyParams = async (req,res,uname,treshold,instruments_binary,min_level,max_level)=> {
+const findWithManyParams = async (req,res,uname,treshold,instruments_binary,min_level,max_level,binary = 1)=> {
     try{
         const ret_all = [];
 
@@ -253,7 +309,7 @@ const findWithManyParams = async (req,res,uname,treshold,instruments_binary,min_
 
         for (let index = 0,filter_iterator = 0; index < coord_filtered.username.length; index++) {
             const jarak_buffer = pythagoras(user.x_coord,user.y_coord,coord_filtered.x[index],coord_filtered.y[index]);
-            if(jarak_buffer <= treshold){
+            if(jarak_buffer <= treshold && user.username != coord_filtered.username[index]){
                 index_filtered[filter_iterator] = index;
                 filter_iterator++;
             }
@@ -263,16 +319,52 @@ const findWithManyParams = async (req,res,uname,treshold,instruments_binary,min_
             
         }
 
-        //Instruments by binary
-        const user_datas = await UserData.getInstruments();
-        var ret_buffer = [];
-        for (let index = 0,ret_index = 0; index < user_datas.username.length; index++) {
-            if(!user_datas.instruments[index]){
-                continue;
+        if(binary==1)
+        {
+            //Instruments by binary
+            const user_datas = await UserData.getInstruments();
+            var ret_buffer = [];
+            for (let index = 0,ret_index = 0; index < user_datas.username.length; index++) {
+                if(!user_datas.instruments[index]){user.username != coord_filtered.username[index]
+                    continue;
+                }
+                if(await compare(instruments_binary,user_datas.instruments[index])==1){
+                    ret_buffer[ret_index] = user_datas.username[index];
+                    ret_index++;
+                }
             }
-            if(await compare(instruments_binary,user_datas.instruments[index])==1){
-                ret_buffer[ret_index] = user_datas.username[index];
-                ret_index++;
+            if(ret_buffer.length == 0){
+                res.writeHead(status_code.NOT_FOUND,header);
+                res.write(JSON.stringify({
+                    message: 'There is no one that can play that instruments'
+                }));
+                res.end();
+                return;
+            }
+        }
+        else {
+            const user_datas = await UserData.getInstruments();
+        
+            const binary = await instrumentsToBinary(instruments_binary);
+            // console.log("qweqweqw", binary); 
+            var ret_buffer = [];
+            for (let index = 0,ret_index = 0; index < user_datas.username.length; index++) {
+                if(!user_datas.instruments[index]){
+                    continue;
+                }
+                if(await compare(binary,user_datas.instruments[index])==1){
+                    ret_buffer[ret_index] = user_datas.username[index];
+                    ret_index++;
+                }
+            }
+
+            if(ret_buffer.length == 0){
+                res.writeHead(status_code.NOT_FOUND,header);
+                res.write(JSON.stringify({
+                    message: 'There is no one that can play that instruments'
+                }));
+                res.end();
+                return;
             }
         }
         

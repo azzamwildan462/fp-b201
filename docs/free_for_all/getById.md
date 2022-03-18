@@ -1,8 +1,12 @@
-# Login
+# Get by Username
 
-Digunakan untuk mendapat token bagi user yang sudah registrasi
+Digunakan untuk mendapatkan informasi seorang user. Memberi response berupa informasi yang dimiliki oleh seorang user
 
 **URL** : `/user/:uname`
+
+**URL example**: `/user/welldone72`
+
+**URL Parameters** : `uname=[string]` dengan syarat hanya diperbolehkan huruf abjad dan angka
 
 **Method** : `GET`
 

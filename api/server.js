@@ -88,6 +88,16 @@ const server = http.createServer((req,res)=>{
 
         findWithManyParams(req,res,uname,treshold,instruments_binary,min_level,max_level);
     }
+    //user/user69/findNearby/10/findByInstruments/Bass-drum/minLevel/12/maxLevel/123
+    else if(req.url.match(/\/user\/([a-zA-Z0-9])+\/findNearby\/([0-9])+\/findByInstruments\/([a-zA-Z-])+\/minLevel\/([0-9])+\/maxLevel\/([0-9])+$/) && req.method == 'GET'){
+        const uname = req.url.split('/')[2];
+        const treshold = parseInt(req.url.split('/')[4]);
+        const instruments_binary = req.url.split('/')[6];
+        const min_level = parseInt(req.url.split('/')[8]);
+        const max_level = parseInt(req.url.split('/')[10]);
+
+        findWithManyParams(req,res,uname,treshold,instruments_binary,min_level,max_level,0);
+    }
     //user/register
     else if(req.url == '/user/register' && req.method == 'POST'){
         createNewUser(req,res);

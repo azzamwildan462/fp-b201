@@ -11,37 +11,23 @@ Endpoint ini tidak memerlukan Autentikasi
 * [Login](free_for_all/login.md) : `POST /user/login`
 * [Register](free_for_all/register.md) : `POST /user/register`
 * [Get User Info](free_for_all/getById.md) : `GET /user/:uname`
-* [Register](free_for_all/register.md) : `POST /user/register`
-* [Register](free_for_all/register.md) : `POST /user/register`
-* [Register](free_for_all/register.md) : `POST /user/register`
+* [Get Nearby Users](free_for_all/getNearby.md) : `GET /user/:uname/findNearby/:treshold`
+* [Get Users by Level](free_for_all/getByLevel.md) : `GET /user/minLevel/:min_level/maxLevel/:max_level`
+* [Get Users by Instruments](free_for_all/getByInstruments.md) : `GET /user/findByInstruments/:instruments_binary`
+* [Get Users with Many Parameters](free_for_all/getWithManyParams.md) : `GET /user/:uname/findNearby/:treshold/findByInstruments/:instruments/minLevel/:min_level/maxLevel/:max_level`
 
 ## Endpoint yang memerlukan autentikasi
 
-Endpoint ini memerlukan token yang valid yang diletakkan pada header dari request. Token didapatkan dari endpoint login. Token yang digunakan adalah JWT.
+Endpoint ini memerlukan token yang valid yang diletakkan pada header dari request. Token didapatkan dari endpoint login atau endpoint register. Token yang digunakan adalah JWT.
 
-### Endpoint user
+* [Update User Data](user/patch.md) : `PUT /user/:uname/update`
+* [Delete User](user/delete.md) : `DELETE /user/:uname/update`
 
-Endpoint-endpoint ini hanya membutuhkan password yang diberikan di request body
 
-* [Change Password](user/patch.md) : `PATCH /api/user`
-* [Delete User](user/delete.md) : `DELETE /api/user`
-
-### Data related
-
-Endpoint yang berkaitan dengan data non user. Setiap endpoint membutuhkan token
-
-* [Get All Data](data/getAll.md) : `GET /api/data`
-* [Get Data by Page](data/getPage.md) : `GET /api/data`
-* [Get Data by ID](data/getId.md) : `GET /api/data/:id`
-* [Create data](data/post.md) : `POST /api/data`
-* [Update data](data/put.md) : `PUT /api/data/:id`
-* [Update data](data/patch.md) : `PATCH /api/data/:id`
-* [Delete data](data/delete.md) : `DELETE /api/data/:id`
-
-### Penggunaan Docker
+## Penggunaan Docker
 
 [Docker](./docker.md)
 
-### Dokumentasi POSTMAN
+## Dokumentasi POSTMAN
 
 [Postman](./B201Baktilab.postman_collection.json)
