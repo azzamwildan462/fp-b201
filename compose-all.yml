@@ -1,30 +1,30 @@
 version: "3.5"
 
 services:
-  mongodb_test:
-    container_name: mongodb_test_container
+  mongodb:
+    container_name: mongodb_container
     build:
       context: ./mongodb
     ports:
       - 969:27017
     # network: host
     command: mongod
-  api_test:
-    container_name: api_test_container
+  api:
+    container_name: api_container
     restart: always
     build:
       context: ./api
     ports:
       - "4321:4321"
     depends_on:
-      - "mongodb_test"
-  nginx_test:
-    container_name: nginx_test_container
+      - "mongodb"
+  nginx:
+    container_name: nginx_container
     restart: always
     build:
       context: ./nginx
     ports:
       - "80:80"
     depends_on:
-      - "api_test"
-      - "mongodb_test"
+      - "api"
+      - "mongodb"
