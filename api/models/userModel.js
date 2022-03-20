@@ -1,5 +1,6 @@
 const User = require('./user');
 const bcrypt = require("bcrypt");
+const UserData = require('./userData');
 
 const findByUname = async (uname) => {
     const res = await User.findOne({username: uname});
@@ -23,7 +24,8 @@ const createUser = async (user) => {
 
 const deleteByUname = async (uname) => {
     const res = await User.deleteOne({username: uname});
-    return res;
+    const res2 = await UserData.deleteOne({username: uname});
+    return (res & res2);
 }
 
 module.exports = {

@@ -162,9 +162,9 @@ const deleteUser = async (req,res,uname) => {
         }
         
     } catch (e){
-        res.writeHead(status_code.INTERNAL_SERVER_ERROR,header);
+        res.writeHead(status_code.UNAUTHORIZED,header);
         res.write(JSON.stringify({
-            message: 'There is an error, maybe??'
+            message: 'There is an error, maybe invalid token??'
         }));
         res.end();
     }

@@ -139,13 +139,138 @@ const updateData = async (req,res,uname) => {
             }
 
             getBodyData(req, async result => {
-                const ret = await UserData.updateData(user_verified.username,JSON.parse(result));
-                if(!ret){
-                    res.writeHead(status_code.INTERNAL_SERVER_ERROR,header);
+                const parsed = JSON.parse(result);
+                // console.log(JSON.stringify(parsed.instruments)," -> ",JSON.stringify(JSON.stringify(parsed.instruments).split('"')[1].match(/[0-1]+$/g)).length-4, " ",JSON.stringify(parsed.instruments).length-2);
+                if(JSON.stringify(JSON.stringify(parsed.instruments).split('"')[1].match(/[0-1]+$/g)).length - 4 != JSON.stringify(parsed.instruments).length - 2){
+                    res.writeHead(status_code.BAD_REQUEST,header);
                     res.write(JSON.stringify({
-                        message: 'Update data failed'
+                        message: 'Invalid Instruments format!'
                     }));
                     res.end();
+                    return;
+                }
+                if(!parsed.contacts.whatsapp)
+                {
+                    //nothing
+                }
+                else 
+                {
+                    if(JSON.stringify(JSON.stringify(parsed.contacts.whatsapp).split('"')[1].match(/[0-9]+$/g)).length - 4 != JSON.stringify(parsed.contacts.whatsapp).length - 2 ){
+                    res.writeHead(status_code.BAD_REQUEST,header);
+                    res.write(JSON.stringify({
+                        message: 'Invalid Whatsapp format!'
+                    }));
+                    res.end();
+                    return;
+                    }
+                }
+                if(!parsed.contacts.instagram)
+                {
+                    //nothing
+                }
+                else 
+                {
+                    if(JSON.stringify(JSON.stringify(parsed.contacts.instagram).split('"')[1].match(/[a-zA-Z0-9\_\-]+$/g)).length - 4 != JSON.stringify(parsed.contacts.instagram).length - 2 ){
+                    res.writeHead(status_code.BAD_REQUEST,header);
+                    res.write(JSON.stringify({
+                        message: 'Invalid Instagram format!'
+                    }));
+                    res.end();
+                    return;
+                    }
+                }
+                if(!parsed.contacts.id_line)
+                {
+                    //nothing
+                }
+                else 
+                {
+                    if(JSON.stringify(JSON.stringify(parsed.contacts.id_line).split('"')[1].match(/[a-zA-Z0-9\_\-]+$/g)).length - 4 != JSON.stringify(parsed.contacts.id_line).length - 2 ){
+                    res.writeHead(status_code.BAD_REQUEST,header);
+                    res.write(JSON.stringify({
+                        message: 'Invalid ID Line format!'
+                    }));
+                    res.end();
+                    return;
+                    }
+                }
+                if(!parsed.skill_level)
+                {
+                    //nothing
+                }
+                else 
+                {
+                    if(parsed.skill_level > 255 || parsed.skill_level < 0){
+                        res.writeHead(status_code.BAD_REQUEST,header);
+                        res.write(JSON.stringify({
+                            message: 'Skill level must be at range 0 - 255'
+                        }));
+                        res.end();
+                        return;
+                    }
+                    if(JSON.stringify(JSON.stringify(parsed.skill_level).split('"')[1].match(/[0-9]+$/g)).length - 4 != JSON.stringify(parsed.skill_level).length - 2 ){
+                    res.writeHead(status_code.BAD_REQUEST,header);
+                    res.write(JSON.stringify({
+                        message: 'Invalid Skill Level format!'
+                    }));
+                    res.end();
+                    return;
+                    }
+                }
+                if(!parsed.x_coord)
+                {
+                    //nothing
+                }
+                else 
+                {
+                    if( isNaN(parsed.x_coord) ){
+                    res.writeHead(status_code.BAD_REQUEST,header);
+                    res.write(JSON.stringify({
+                        message: 'Invalid X_Coord format!'
+                    }));
+                    res.end();
+                    return;
+                    }
+                }
+                if(!parsed.y_coord)
+                {
+                    //nothing
+                }
+                else 
+                {
+                    if( isNaN(parsed.y_coord) ){
+                    res.writeHead(status_code.BAD_REQUEST,header);
+                    res.write(JSON.stringify({
+                        message: 'Invalid Y_Coord format!'
+                    }));
+                    res.end();
+                    return;
+                    }
+                }
+                if(!parsed.username)
+                {
+                    //nothing
+                }
+                else 
+                {
+                    if(JSON.stringify(JSON.stringify(parsed.username).split('"')[1].match(/[a-zA-Z0-9]+$/g)).length - 4 != JSON.stringify(parsed.username).length - 2 ){
+                    res.writeHead(status_code.BAD_REQUEST,header);
+                    res.write(JSON.stringify({
+                        message: 'Invalid Username format!'
+                    }));
+                    res.end();
+                    return;
+                    }
+                }
+
+                const ret = await UserData.updateData(user_verified.username,parsed);
+                if(!ret){
+                    res.writeHead(status_code.UNAUTHORIZED,header);
+                    res.write(JSON.stringify({
+                        message: 'Update data failed, maybe username has changed?'
+                    }));
+                    res.end();
+                    return;
                 }
                 res.writeHead(status_code.OK,header);
                 res.write(JSON.stringify(ret));

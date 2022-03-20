@@ -1,4 +1,5 @@
 const UserData = require('./userData');
+const User = require('./userModel');
 
 const findByUname = async (uname) => {
     const res = await UserData.findOne({username: uname});
@@ -45,6 +46,22 @@ const updateData = async (uname,data) => {
     const ret = await UserData.findOneAndUpdate({username: uname},data,{
         new: true
     });
+    // console.log(ret);
+    // console.log(data.username);
+    if(!data.username){
+        // console.log("asuidasibuiusad");
+        return ret;
+    }
+    else {
+        var user_buffer = await User.findByUname(uname);
+        if(!user_buffer){
+            return false;
+        }
+        user_buffer.username = data.username;
+        const ret2 = await user_buffer.save();
+        // console.log(ret2);
+    }
+
     return ret;
 };
 
