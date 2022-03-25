@@ -27,3 +27,6 @@ Untuk memulai aplikasi
 ```
 ./docker.sh -s
 ```
+
+## Tambahan
+Selalu pastikan configurasi untuk aplikasi, terutama IP masing-masing container

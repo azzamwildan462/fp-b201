@@ -21,8 +21,10 @@ const getUsername = async () => {
     return res_buffer.map(res => res.username);
 };
 
-const filterCoordinate = async () => {
-    const res_buffer = await UserData.find({});
+const filterCoordinate = async (page = 0,limit = 20) => {
+    const res_buffer = await UserData.find()
+        .skip(page * limit)
+        .limit(limit);
     var buffer = [];
     buffer.username = res_buffer.map(res => res.username);
     buffer.x = res_buffer.map(res => res.x_coord);
@@ -65,19 +67,20 @@ const updateData = async (uname,data) => {
     return ret;
 };
 
-const findByLevel = async (min_treshold,max_treshold) => {
+const findByLevel = async (min_treshold,max_treshold,page = 0,limit = 20) => {
     const buff = await UserData.find({
         skill_level: {
             $gte: min_treshold,
             $lte: max_treshold
         }
-    });
+    }).skip(page * limit)
+    .limit(limit);
 
     return buff;
 }
-const getInstruments = async () => {
+const getInstruments = async (page = 0,limit = 20) => {
     var buffer = [];
-    const res_buffer = await UserData.find({});
+    const res_buffer = await UserData.find({}).skip(page * limit).limit(limit);
     buffer.instruments = res_buffer.map(res => res.instruments);
     buffer.username = res_buffer.map(res => res.username);
 

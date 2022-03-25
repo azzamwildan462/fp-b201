@@ -2,7 +2,7 @@
 
 API dibuat menggunakan NodeJS [https server](https://nodejs.org/api/https.html). Hanya menerima request dan response berupa [JSON](https://www.json.org/json-en.html).
 
-**IP**: `172.16.80.122`
+**IP**: `13.70.25.101`
 
 ## Endpoint terbuka
 

@@ -59,6 +59,14 @@ const server = http.createServer((req,res)=>{
 
         findNearby(req,res,uname,treshold);
     }
+    //user/user123/findNearby/10/page/0
+    else if(req.url.match(/\/user\/([a-zA-Z0-9])+\/findNearby\/([0-9])+\/page\/([0-9])+$/) && req.method == 'GET'){
+        const uname = req.url.split('/')[2];
+        const treshold = parseInt(req.url.split('/')[4]);
+        const page = parseInt(req.url.split('/')[6]);
+
+        findNearby(req,res,uname,treshold,page);
+    }
     //user/minLevel/69/maxLevel/169
     else if(req.url.match(/\/user\/minLevel\/([0-9])+\/maxLevel\/([0-9])+$/) && req.method == 'GET'){
         const min_level = parseInt(req.url.split('/')[3]);
@@ -66,11 +74,26 @@ const server = http.createServer((req,res)=>{
 
         findByLevel(req,res,min_level,max_level);
     }
+    //user/minLevel/69/maxLevel/169/page/1
+    else if(req.url.match(/\/user\/minLevel\/([0-9])+\/maxLevel\/([0-9])+\/page\/([0-9])+$/) && req.method == 'GET'){
+        const min_level = parseInt(req.url.split('/')[3]);
+        const max_level = parseInt(req.url.split('/')[5]);
+        const page = parseInt(req.url.split('/')[7]);
+
+        findByLevel(req,res,min_level,max_level,page);
+    }
     //user/findByInstruments/100010010
     else if(req.url.match(/\/user\/findByInstruments\/([0-1])+$/) && req.method == 'GET'){
         const instruments = req.url.split('/')[3];
 
         findByInstrumentsBinary(req,res,instruments);
+    }
+    //user/findByInstruments/100010010/page/1
+    else if(req.url.match(/\/user\/findByInstruments\/([0-1])+\/page\/([0-9])+$/) && req.method == 'GET'){
+        const instruments = req.url.split('/')[3];
+        const page = parseInt(req.url.split('/')[5]);
+
+        findByInstrumentsBinary(req,res,instruments,page);
     }
     //user/findByInstruments/gitar-bass-drum
     else if(req.url.match(/\/user\/findByInstruments\/([a-zA-Z-])+$/) && req.method == 'GET'){

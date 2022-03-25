@@ -48,7 +48,7 @@ const getUserInfo = async (req,res,uname) => {
         res.end();
     }
 };
-const findNearby = async (req,res,uname,treshold) => {
+const findNearby = async (req,res,uname,treshold,page = 0,limit = 20) => {
     try {
         const user = await UserData.findByUname(uname);
         if(!user){
@@ -63,7 +63,7 @@ const findNearby = async (req,res,uname,treshold) => {
         var coord_filtered = [];
         var fixed_uname = [];
 
-        coord_filtered = await UserData.filterCoordinate();
+        coord_filtered = await UserData.filterCoordinate(page,limit);
 
         for (let index = 0,filter_iterator = 0; index < coord_filtered.username.length; index++) {
             const jarak_buffer = pythagoras(user.x_coord,user.y_coord,coord_filtered.x[index],coord_filtered.y[index]);
@@ -286,7 +286,7 @@ const updateData = async (req,res,uname) => {
     }
 };
 
-const findByLevel = async (req,res,min_level,max_level) => {
+const findByLevel = async (req,res,min_level,max_level,page = 0, limit = 20) => {
     try {
         if(min_level>max_level){
             res.writeHead(status_code.BAD_REQUEST,header);
@@ -305,7 +305,7 @@ const findByLevel = async (req,res,min_level,max_level) => {
             return;
         }
 
-        const users = await UserData.findByLevel(min_level,max_level);
+        const users = await UserData.findByLevel(min_level,max_level,page,limit);
 
         if(!users){
             res.writeHead(status_code.NOT_FOUND,header);
@@ -339,9 +339,9 @@ const findByLevel = async (req,res,min_level,max_level) => {
     }
 }
 
-const findByInstrumentsBinary = async (req,res,instruments_binary) => {
+const findByInstrumentsBinary = async (req,res,instruments_binary,page = 0,limit = 20) => {
     try {
-        const user_datas = await UserData.getInstruments();
+        const user_datas = await UserData.getInstruments(page,limit);
 
         var ret_buffer = [];
         for (let index = 0,ret_index = 0; index < user_datas.username.length; index++) {
